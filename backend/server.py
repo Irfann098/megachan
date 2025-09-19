@@ -331,15 +331,25 @@ async def start_quiz(
     category: str = "crypto",
     current_user: FarcasterUser = Depends(get_current_user)
 ) -> QuizSession:
-    """Start a new quiz session"""
+    """Start a new quiz session with daily limit enforcement"""
+    
+    # Check daily quest status
+    quest_status = get_daily_quest_status(current_user.fid)
+    if not quest_status.can_play:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Daily limit reached. You can play again after {quest_status.reset_time.isoformat()}Z"
+        )
+    
     # Select questions based on category
     if category.lower() == "crypto":
         available_questions = CRYPTO_QUESTIONS
     else:
         available_questions = GENERAL_QUESTIONS
     
-    # Select random questions
-    selected_questions = random.sample(available_questions, min(5, len(available_questions)))
+    # For daily quest, limit to exactly 3 questions
+    num_questions = min(3, quest_status.attempts_remaining)
+    selected_questions = random.sample(available_questions, min(num_questions, len(available_questions)))
     
     # Create Question objects
     questions = []
@@ -363,6 +373,10 @@ async def start_quiz(
     
     # Store session
     quiz_sessions[quiz_session.session_id] = quiz_session
+    
+    # Update daily quest attempts
+    daily_quest = get_daily_quest(current_user.fid)
+    daily_quest.attempts_used += 1
     
     return quiz_session
 
