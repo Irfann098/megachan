@@ -50,7 +50,7 @@ const FarcasterQuizApp = () => {
     }
   }, [isAuthenticated, profile]);
 
-  // Timer effect
+  // Timer effect for question countdown
   useEffect(() => {
     let interval = null;
     if (timerActive && timeLeft > 0) {
@@ -66,6 +66,32 @@ const FarcasterQuizApp = () => {
     }
     return () => clearInterval(interval);
   }, [timerActive, timeLeft]);
+
+  // Timer effect for reset countdown
+  useEffect(() => {
+    if (questStatus && questStatus.reset_time) {
+      const updateCountdown = () => {
+        const resetTime = new Date(questStatus.reset_time);
+        const now = new Date();
+        const diff = resetTime - now;
+        
+        if (diff > 0) {
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+          setResetCountdown(`${hours}h ${minutes}m ${seconds}s`);
+        } else {
+          setResetCountdown('Resetting...');
+          // Refresh quest status when reset time is reached
+          loadQuestStatus();
+        }
+      };
+
+      updateCountdown();
+      const interval = setInterval(updateCountdown, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [questStatus]);
 
   const initializeAuthenticatedApp = async () => {
     try {
