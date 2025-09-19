@@ -174,6 +174,44 @@ GENERAL_QUESTIONS = [
 # In-memory storage (use database in production)
 quiz_sessions = {}
 leaderboard_data = []
+daily_quests = {}  # Key: f"{user_fid}_{date}" -> DailyQuest
+
+# Daily quest utility functions
+def get_utc_date_string() -> str:
+    """Get current UTC date in YYYY-MM-DD format"""
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+def get_next_reset_time() -> datetime:
+    """Get the next 0:00 UTC reset time"""
+    now = datetime.now(timezone.utc)
+    tomorrow = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+    return tomorrow
+
+def get_daily_quest(user_fid: int) -> DailyQuest:
+    """Get or create daily quest for user"""
+    today = get_utc_date_string()
+    quest_key = f"{user_fid}_{today}"
+    
+    if quest_key not in daily_quests:
+        daily_quests[quest_key] = DailyQuest(
+            user_fid=user_fid,
+            date=today
+        )
+    
+    return daily_quests[quest_key]
+
+def get_daily_quest_status(user_fid: int) -> DailyQuestStatus:
+    """Get daily quest status for user"""
+    quest = get_daily_quest(user_fid)
+    attempts_remaining = max(0, quest.max_attempts - quest.attempts_used)
+    
+    return DailyQuestStatus(
+        attempts_remaining=attempts_remaining,
+        max_attempts=quest.max_attempts,
+        reset_time=get_next_reset_time(),
+        total_score_today=quest.total_score,
+        can_play=attempts_remaining > 0
+    )
 
 # Authentication functions
 class FarcasterAuth:
