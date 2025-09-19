@@ -257,6 +257,11 @@ const FarcasterQuizApp = () => {
         current_question: prev.current_question + 1
       }));
       
+      // Update quest status from response
+      if (response.data.quest_status) {
+        setQuestStatus(response.data.quest_status);
+      }
+      
       // Show result for 3 seconds
       setTimeout(() => {
         if (response.data.quiz_completed) {
