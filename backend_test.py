@@ -327,6 +327,20 @@ class FarcasterQuizAPITester:
             print(f"   Crypto leaderboard entries: {len(response)}")
         return success
 
+    def test_weekly_leaderboard_status(self):
+        """Test getting weekly leaderboard reset status"""
+        success, response = self.run_test(
+            "Weekly Leaderboard Status",
+            "GET",
+            "/leaderboard/weekly-status",
+            200
+        )
+        if success:
+            print(f"   Next reset: {response.get('next_reset')}")
+            print(f"   Days until reset: {response.get('days_until_reset')}")
+            print(f"   Last reset: {response.get('last_reset')}")
+        return success
+
     def test_invalid_session(self):
         """Test accessing invalid session"""
         if not self.token:
