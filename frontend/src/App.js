@@ -117,6 +117,7 @@ const FarcasterQuizApp = () => {
           setWeeklyResetCountdown('Resetting...');
           // Refresh leaderboard when reset time is reached
           loadLeaderboard();
+          loadWeeklyLeaderboardStatus();
         }
       };
 
