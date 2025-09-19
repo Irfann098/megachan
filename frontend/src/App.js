@@ -468,4 +468,12 @@ const FarcasterQuizApp = () => {
   );
 };
 
-export default FarcasterQuizApp;
+const App = () => {
+  return (
+    <AuthKitProvider config={farcasterConfig}>
+      <FarcasterQuizApp />
+    </AuthKitProvider>
+  );
+};
+
+export default App;
