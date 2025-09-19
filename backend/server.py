@@ -322,7 +322,7 @@ async def get_user_profile(current_user: FarcasterUser = Depends(get_current_use
     return current_user
 
 @api_router.get("/user/daily-quest", response_model=DailyQuestStatus)
-async def get_daily_quest_status(current_user: FarcasterUser = Depends(get_current_user)):
+async def get_daily_quest_status_endpoint(current_user: FarcasterUser = Depends(get_current_user)):
     """Get user's daily quest status"""
     return get_daily_quest_status(current_user.fid)
 
