@@ -420,6 +420,12 @@ async def submit_answer(
     if is_correct:
         session.score += 1
     
+    # Update daily quest progress
+    daily_quest = get_daily_quest(current_user.fid)
+    daily_quest.questions_answered.append(current_question.id)
+    if is_correct:
+        daily_quest.total_score += 1
+    
     # Move to next question
     session.current_question += 1
     
@@ -428,12 +434,12 @@ async def submit_answer(
         session.completed = True
         completion_time = int((datetime.now(timezone.utc) - session.start_time).total_seconds())
         
-        # Add to leaderboard
+        # Add to leaderboard (using daily total score)
         leaderboard_entry = LeaderboardEntry(
             fid=current_user.fid,
             username=current_user.username,
             display_name=current_user.display_name,
-            score=session.score,
+            score=daily_quest.total_score,  # Use daily total score
             completion_time=completion_time,
             pfp_url=current_user.pfp_url,
             category=session.category
@@ -447,15 +453,20 @@ async def submit_answer(
     if session.current_question < len(session.questions):
         next_question = session.questions[session.current_question]
     
+    # Get updated quest status
+    quest_status = get_daily_quest_status(current_user.fid)
+    
     return {
         "correct": is_correct,
         "correct_answer": current_question.correct_answer,
         "explanation": f"The correct answer was: {current_question.options[current_question.correct_answer]}",
         "current_score": session.score,
+        "daily_total_score": daily_quest.total_score,
         "total_questions": len(session.questions),
         "quiz_completed": session.completed,
         "next_question": next_question,
-        "session_id": session.session_id
+        "session_id": session.session_id,
+        "quest_status": quest_status
     }
 
 @api_router.get("/quiz/leaderboard")
