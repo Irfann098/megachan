@@ -116,6 +116,8 @@ const FarcasterQuizApp = () => {
       const token = authResponse.data.access_token;
       setAuthToken(token);
       
+      // Load quest status and leaderboard
+      await loadQuestStatus(token);
       await loadLeaderboard();
     } catch (error) {
       console.error('Failed to initialize authenticated app:', error);
@@ -148,11 +150,31 @@ const FarcasterQuizApp = () => {
       };
       
       setUser(demoUser);
+      await loadQuestStatus(token);
       await loadLeaderboard();
     } catch (error) {
       console.error('Failed to initialize demo app:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadQuestStatus = async (token = authToken) => {
+    try {
+      const response = await axios.get(`${API}/user/daily-quest`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setQuestStatus(response.data);
+    } catch (error) {
+      console.error('Failed to load quest status:', error);
+      // Set default quest status for demo
+      setQuestStatus({
+        attempts_remaining: 3,
+        max_attempts: 3,
+        reset_time: new Date(new Date().setUTCHours(24, 0, 0, 0)).toISOString(),
+        total_score_today: 0,
+        can_play: true
+      });
     }
   };
 
