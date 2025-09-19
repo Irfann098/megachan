@@ -398,38 +398,59 @@ const FarcasterQuizApp = () => {
   }
 
   if (gameState === 'completed') {
-    const percentage = Math.round((currentQuiz.score / currentQuiz.questions.length) * 100);
+    const sessionPercentage = Math.round((currentQuiz.score / currentQuiz.questions.length) * 100);
+    const dailyScore = lastResult?.daily_total_score || questStatus?.total_score_today || 0;
     
     return (
       <div className="completion-container">
         <Card className="completion-card">
           <div className="completion-header">
             <Trophy className="completion-icon" />
-            <h1>Quiz Complete!</h1>
+            <h1>Daily Quest Complete!</h1>
           </div>
           
           <div className="completion-stats">
             <div className="stat-large">
               <span className="stat-number">{currentQuiz.score}</span>
-              <span className="stat-label">Correct Answers</span>
+              <span className="stat-label">This Session</span>
             </div>
             <div className="stat-large">
-              <span className="stat-number">{percentage}%</span>
-              <span className="stat-label">Accuracy</span>
+              <span className="stat-number">{dailyScore}</span>
+              <span className="stat-label">Today's Total</span>
+            </div>
+            <div className="stat-large">
+              <span className="stat-number">{questStatus?.attempts_remaining || 0}</span>
+              <span className="stat-label">Attempts Left</span>
             </div>
           </div>
-          
-          <div className="completion-actions">
-            <Button onClick={() => startQuiz(selectedCategory)} className="primary">
-              Play Again
-            </Button>
-            <Button onClick={() => setGameState('leaderboard')} className="secondary">
-              View Leaderboard
-            </Button>
-            <Button onClick={() => setGameState('home')} className="tertiary">
-              Home
-            </Button>
-          </div>
+
+          {questStatus?.attempts_remaining > 0 ? (
+            <div className="completion-actions">
+              <Button onClick={() => startQuiz(selectedCategory)} className="primary">
+                Continue Daily Quest
+              </Button>
+              <Button onClick={() => setGameState('leaderboard')} className="secondary">
+                View Leaderboard
+              </Button>
+              <Button onClick={() => setGameState('home')} className="tertiary">
+                Home
+              </Button>
+            </div>
+          ) : (
+            <div className="completion-actions">
+              <div className="daily-complete-message">
+                <h3>🎉 Daily Quest Complete!</h3>
+                <p>Come back tomorrow for more questions!</p>
+                <p className="reset-countdown">Next reset: {resetCountdown}</p>
+              </div>
+              <Button onClick={() => setGameState('leaderboard')} className="primary">
+                View Leaderboard
+              </Button>
+              <Button onClick={() => setGameState('home')} className="secondary">
+                Home
+              </Button>
+            </div>
+          )}
         </Card>
       </div>
     );
