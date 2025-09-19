@@ -531,13 +531,19 @@ async def get_leaderboard(
     limit: int = 10,
     current_user: Optional[FarcasterUser] = Depends(get_optional_user)
 ) -> List[LeaderboardEntry]:
-    """Get the quiz leaderboard"""
+    """Get the quiz leaderboard with weekly reset"""
+    # Check and reset leaderboard if it's a new week
+    reset_occurred = check_and_reset_weekly_leaderboard()
+    
     filtered_data = leaderboard_data
     
     if category:
         filtered_data = [entry for entry in leaderboard_data if entry.category.lower() == category.lower()]
     
-    return filtered_data[:limit]
+    # Add reset status to help frontend know if reset just occurred
+    response_data = filtered_data[:limit]
+    
+    return response_data
 
 @api_router.get("/quiz/session/{session_id}")
 async def get_quiz_session(
