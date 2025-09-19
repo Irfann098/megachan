@@ -67,6 +67,22 @@ class AnswerSubmission(BaseModel):
     question_id: str
     selected_answer: int
 
+class DailyQuest(BaseModel):
+    user_fid: int
+    date: str  # YYYY-MM-DD format
+    attempts_used: int = 0
+    max_attempts: int = 3
+    questions_answered: List[str] = []
+    total_score: int = 0
+    last_reset: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class DailyQuestStatus(BaseModel):
+    attempts_remaining: int
+    max_attempts: int
+    reset_time: datetime
+    total_score_today: int
+    can_play: bool
+
 class LeaderboardEntry(BaseModel):
     fid: int
     username: str
