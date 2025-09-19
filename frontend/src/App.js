@@ -500,6 +500,17 @@ const FarcasterQuizApp = () => {
             <div className="user-info">
               <h3 className="user-name">{user.display_name}</h3>
               <p className="user-username">@{user.username}</p>
+              {questStatus && (
+                <div className="quest-status">
+                  <p className="daily-score">Today's Score: {questStatus.total_score_today}</p>
+                  <p className="attempts-remaining">
+                    Attempts: {questStatus.attempts_remaining}/{questStatus.max_attempts}
+                  </p>
+                  {questStatus.attempts_remaining === 0 && (
+                    <p className="reset-timer">Reset in: {resetCountdown}</p>
+                  )}
+                </div>
+              )}
             </div>
             {isAuthenticated && (
               <Button onClick={signOut} className="sign-out-button">
