@@ -30,8 +30,8 @@ app = FastAPI(title="Farcaster Quiz Mini App", version="1.0.0")
 # Security
 security = HTTPBearer()
 
-# Create a router with the /api prefix
-api_router = APIRouter(prefix="/api")
+# Create a router with the /frames prefix
+api_router = APIRouter(prefix="/frames")
 
 # Models
 class FarcasterUser(BaseModel):
