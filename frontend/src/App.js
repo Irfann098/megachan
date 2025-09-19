@@ -92,8 +92,37 @@ const FarcasterQuizApp = () => {
       updateCountdown();
       const interval = setInterval(updateCountdown, 1000);
       return () => clearInterval(interval);
+  // Timer effect for weekly leaderboard reset countdown
+  useEffect(() => {
+    if (weeklyLeaderboardStatus && weeklyLeaderboardStatus.next_reset) {
+      const updateWeeklyCountdown = () => {
+        const resetTime = new Date(weeklyLeaderboardStatus.next_reset);
+        const now = new Date();
+        const diff = resetTime - now;
+        
+        if (diff > 0) {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          
+          if (days > 0) {
+            setWeeklyResetCountdown(`${days}d ${hours}h ${minutes}m`);
+          } else {
+            setWeeklyResetCountdown(`${hours}h ${minutes}m`);
+          }
+        } else {
+          setWeeklyResetCountdown('Resetting...');
+          // Refresh leaderboard when reset time is reached
+          loadLeaderboard();
+          loadWeeklyLeaderboardStatus();
+        }
+      };
+
+      updateWeeklyCountdown();
+      const interval = setInterval(updateWeeklyCountdown, 60000); // Update every minute
+      return () => clearInterval(interval);
     }
-  }, [questStatus]);
+  }, [weeklyLeaderboardStatus]);
 
   const initializeAuthenticatedApp = async () => {
     try {
