@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class FarcasterQuizAPITester:
-    def __init__(self, base_url="http://localhost:8001"):
+    def __init__(self, base_url="https://quizchain.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -12,6 +12,7 @@ class FarcasterQuizAPITester:
         self.tests_passed = 0
         self.session_id = None
         self.user_fid = None
+        self.quest_status = None
 
     def run_test(self, name, method, endpoint, expected_status, data=None, params=None):
         """Run a single API test"""
