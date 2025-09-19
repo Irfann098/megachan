@@ -376,7 +376,7 @@ async def get_daily_quest_status_endpoint(current_user: FarcasterUser = Depends(
     return get_daily_quest_status(current_user.fid)
 
 @api_router.get("/leaderboard/weekly-status", response_model=WeeklyLeaderboardStatus)
-async def get_weekly_leaderboard_status():
+async def get_weekly_leaderboard_status_endpoint():
     """Get weekly leaderboard reset status"""
     # Check for weekly reset before returning status
     check_and_reset_weekly_leaderboard()
