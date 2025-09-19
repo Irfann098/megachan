@@ -522,7 +522,7 @@ const FarcasterQuizApp = () => {
       )}
 
       <div className="game-modes">
-        <Card className="mode-card crypto-mode" onClick={() => startQuiz('crypto')}>
+        <Card className={`mode-card crypto-mode ${!questStatus?.can_play ? 'disabled' : ''}`} onClick={() => questStatus?.can_play && startQuiz('crypto')}>
           <div className="mode-icon">
             <Zap />
           </div>
@@ -530,10 +530,15 @@ const FarcasterQuizApp = () => {
           <p className="mode-description">
             Test your knowledge of cryptocurrencies, DeFi, and blockchain technology
           </p>
-          <Badge className="mode-badge">5 Questions</Badge>
+          <Badge className="mode-badge">
+            {questStatus?.can_play ? `${questStatus.attempts_remaining} Questions Left` : 'Daily Limit Reached'}
+          </Badge>
+          {!questStatus?.can_play && (
+            <p className="reset-info">Reset in: {resetCountdown}</p>
+          )}
         </Card>
 
-        <Card className="mode-card general-mode" onClick={() => startQuiz('general')}>
+        <Card className={`mode-card general-mode ${!questStatus?.can_play ? 'disabled' : ''}`} onClick={() => questStatus?.can_play && startQuiz('general')}>
           <div className="mode-icon">
             <Brain />
           </div>
@@ -541,7 +546,12 @@ const FarcasterQuizApp = () => {
           <p className="mode-description">
             Challenge yourself with questions from various topics and subjects
           </p>
-          <Badge className="mode-badge">4 Questions</Badge>
+          <Badge className="mode-badge">
+            {questStatus?.can_play ? `${questStatus.attempts_remaining} Questions Left` : 'Daily Limit Reached'}
+          </Badge>
+          {!questStatus?.can_play && (
+            <p className="reset-info">Reset in: {resetCountdown}</p>
+          )}
         </Card>
       </div>
 
