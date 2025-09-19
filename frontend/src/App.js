@@ -186,6 +186,7 @@ const FarcasterQuizApp = () => {
       setUser(demoUser);
       await loadQuestStatus(token);
       await loadLeaderboard();
+      await loadWeeklyLeaderboardStatus();
     } catch (error) {
       console.error('Failed to initialize demo app:', error);
     } finally {
