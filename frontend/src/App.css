@@ -163,6 +163,32 @@ body::before {
 .user-username {
   color: #40e0d0;
   font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.quest-status {
+  margin-top: 8px;
+}
+
+.quest-status p {
+  margin: 2px 0;
+  font-size: 0.9rem;
+}
+
+.daily-score {
+  color: #4ade80 !important;
+  font-weight: 600;
+}
+
+.attempts-remaining {
+  color: #40e0d0 !important;
+  font-weight: 500;
+}
+
+.reset-timer, .reset-info {
+  color: #f59e0b !important;
+  font-size: 0.85rem !important;
+  font-weight: 500;
 }
 
 .sign-out-button {
