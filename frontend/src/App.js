@@ -4,7 +4,9 @@ import axios from 'axios';
 import { Card } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
-import { Timer, Trophy, User, Zap, Brain, Globe } from 'lucide-react';
+import { Timer, Trophy, User, Zap, Brain, Globe, Wallet } from 'lucide-react';
+import { AuthKitProvider, SignInButton, useProfile } from '@farcaster/auth-kit';
+import '@farcaster/auth-kit/styles.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
