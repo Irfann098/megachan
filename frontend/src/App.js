@@ -315,6 +315,12 @@ const FarcasterQuizApp = () => {
     const currentQuestion = currentQuiz.questions[currentQuiz.current_question];
     const progress = ((currentQuiz.current_question) / currentQuiz.questions.length) * 100;
     
+    // Safety check: if no current question, quiz should be completed
+    if (!currentQuestion) {
+      setGameState('completed');
+      return null;
+    }
+    
     return (
       <div className="quiz-container">
         <div className="quiz-header">
