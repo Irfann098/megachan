@@ -343,10 +343,12 @@ class FarcasterQuizAPITester:
         return success
 
 def main():
-    print("🚀 Starting Farcaster Quiz API Tests")
-    print("=" * 50)
+    print("🚀 Starting Farcaster Quiz API Tests with Daily Quest System")
+    print("=" * 60)
     
-    # Initialize tester
+    # Initialize tester with unique user to avoid conflicts
+    import random
+    test_fid = random.randint(50000, 99999)  # Use random FID to avoid conflicts
     tester = FarcasterQuizAPITester()
     
     # Run basic connectivity tests
@@ -358,29 +360,39 @@ def main():
         print("❌ Root endpoint failed, stopping tests")
         return 1
 
-    # Test authentication
-    if not tester.test_mock_login():
+    # Test authentication with unique user
+    tester.user_fid = test_fid
+    success, response = tester.run_test(
+        "Mock Login with Unique User",
+        "POST",
+        "/auth/mock-login",
+        200,
+        params={"fid": test_fid}
+    )
+    if success and 'access_token' in response:
+        tester.token = response['access_token']
+        print(f"   Token obtained for FID {test_fid}")
+    else:
         print("❌ Authentication failed, stopping tests")
         return 1
 
     # Test user profile
-    tester.test_user_profile()
-
-    # Test quiz functionality
-    if not tester.test_start_crypto_quiz():
-        print("❌ Crypto quiz start failed")
+    if not tester.test_user_profile():
+        print("❌ User profile test failed")
         return 1
 
-    # Test quiz session retrieval
-    tester.test_get_quiz_session()
+    # Test NEW Daily Quest functionality
+    print("\n🎯 Testing Daily Quest System...")
+    if not tester.test_daily_quest_status():
+        print("❌ Daily quest status test failed")
+        return 1
 
-    # Test answer submission
-    tester.test_submit_answer()
+    # Test daily limit enforcement (this is the key new feature)
+    if not tester.test_daily_limit_enforcement():
+        print("❌ Daily limit enforcement test failed")
+        return 1
 
-    # Test general knowledge quiz
-    tester.test_start_general_quiz()
-
-    # Test leaderboard
+    # Test leaderboard (should show daily scores)
     tester.test_leaderboard()
     tester.test_leaderboard_with_category()
 
@@ -389,11 +401,11 @@ def main():
     tester.test_unauthorized_access()
 
     # Print final results
-    print("\n" + "=" * 50)
+    print("\n" + "=" * 60)
     print(f"📊 Test Results: {tester.tests_passed}/{tester.tests_run} tests passed")
     
     if tester.tests_passed == tester.tests_run:
-        print("🎉 All tests passed!")
+        print("🎉 All Daily Quest API tests passed!")
         return 0
     else:
         print(f"❌ {tester.tests_run - tester.tests_passed} tests failed")
