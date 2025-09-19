@@ -522,22 +522,36 @@ const FarcasterQuizApp = () => {
         <Card className="leaderboard-card">
           <div className="leaderboard-header">
             <Trophy className="leaderboard-icon" />
-            <h1>Leaderboard</h1>
+            <h1>Weekly Leaderboard</h1>
+            {weeklyLeaderboardStatus && (
+              <div className="weekly-reset-info">
+                <p className="reset-info-text">
+                  Resets every Monday • Next reset: {weeklyResetCountdown}
+                </p>
+              </div>
+            )}
           </div>
           
           <div className="leaderboard-list">
-            {leaderboard.map((entry, index) => (
-              <div key={entry.fid} className={`leaderboard-entry ${entry.fid === user?.fid ? 'current-user' : ''}`}>
-                <div className="rank-badge">#{index + 1}</div>
-                <img src={entry.pfp_url} alt={entry.display_name} className="player-avatar" />
-                <div className="player-info">
-                  <span className="player-name">{entry.display_name}</span>
-                  <span className="player-username">@{entry.username}</span>
-                </div>
-                <Badge className="category-badge">{entry.category}</Badge>
-                <div className="player-score">{entry.score} pts</div>
+            {leaderboard.length === 0 ? (
+              <div className="empty-leaderboard">
+                <p>No scores yet this week!</p>
+                <p>Be the first to complete the daily quest.</p>
               </div>
-            ))}
+            ) : (
+              leaderboard.map((entry, index) => (
+                <div key={entry.fid} className={`leaderboard-entry ${entry.fid === user?.fid ? 'current-user' : ''}`}>
+                  <div className="rank-badge">#{index + 1}</div>
+                  <img src={entry.pfp_url} alt={entry.display_name} className="player-avatar" />
+                  <div className="player-info">
+                    <span className="player-name">{entry.display_name}</span>
+                    <span className="player-username">@{entry.username}</span>
+                  </div>
+                  <Badge className="category-badge">{entry.category}</Badge>
+                  <div className="player-score">{entry.score} pts</div>
+                </div>
+              ))
+            )}
           </div>
           
           <Button onClick={() => setGameState('home')} className="back-button">
