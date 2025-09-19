@@ -11,6 +11,14 @@ import '@farcaster/auth-kit/styles.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Farcaster Auth Config
+const farcasterConfig = {
+  rpcUrl: 'https://mainnet.optimism.io',
+  domain: window.location.hostname,
+  siweUri: window.location.origin,
+  relay: 'https://relay.farcaster.xyz',
+};
+
 const FarcasterQuizApp = () => {
   const [user, setUser] = useState(null);
   const [authToken, setAuthToken] = useState(null);
