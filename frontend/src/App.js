@@ -434,6 +434,11 @@ const FarcasterQuizApp = () => {
               <h3 className="user-name">{user.display_name}</h3>
               <p className="user-username">@{user.username}</p>
             </div>
+            {isAuthenticated && (
+              <Button onClick={signOut} className="sign-out-button">
+                Sign Out
+              </Button>
+            )}
           </div>
         </Card>
       )}
