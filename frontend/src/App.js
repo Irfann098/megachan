@@ -20,6 +20,12 @@ const farcasterConfig = {
 };
 
 const FarcasterQuizApp = () => {
+  const { 
+    isAuthenticated, 
+    profile,
+    signOut
+  } = useProfile();
+  
   const [user, setUser] = useState(null);
   const [authToken, setAuthToken] = useState(null);
   const [currentQuiz, setCurrentQuiz] = useState(null);
@@ -34,8 +40,13 @@ const FarcasterQuizApp = () => {
   const [timerActive, setTimerActive] = useState(false);
 
   useEffect(() => {
-    initializeApp();
-  }, []);
+    if (isAuthenticated && profile) {
+      initializeAuthenticatedApp();
+    } else {
+      // For unauthenticated users, still initialize the app with demo functionality
+      initializeDemoApp();
+    }
+  }, [isAuthenticated, profile]);
 
   // Timer effect
   useEffect(() => {
@@ -54,22 +65,43 @@ const FarcasterQuizApp = () => {
     return () => clearInterval(interval);
   }, [timerActive, timeLeft]);
 
-  const initializeApp = async () => {
+  const initializeAuthenticatedApp = async () => {
     try {
       setLoading(true);
-      await authenticateUser();
+      
+      // Create user object from Farcaster profile
+      const farcasterUser = {
+        fid: profile.fid,
+        username: profile.username,
+        display_name: profile.displayName,
+        bio: profile.bio,
+        pfp_url: profile.pfpUrl
+      };
+      
+      setUser(farcasterUser);
+      
+      // Get mock authentication token for the backend
+      const authResponse = await axios.post(`${API}/auth/mock-login`, null, {
+        params: { fid: profile.fid }
+      });
+      
+      const token = authResponse.data.access_token;
+      setAuthToken(token);
+      
       await loadLeaderboard();
     } catch (error) {
-      console.error('Failed to initialize app:', error);
+      console.error('Failed to initialize authenticated app:', error);
+      initializeDemoApp();
     } finally {
       setLoading(false);
     }
   };
 
-  const authenticateUser = async () => {
+  const initializeDemoApp = async () => {
     try {
-      // For development, use mock authentication
-      // In production, this would use Farcaster SDK
+      setLoading(true);
+      
+      // For demo purposes without authentication
       const mockFid = Math.floor(Math.random() * 10000) + 1000;
       const authResponse = await axios.post(`${API}/auth/mock-login`, null, {
         params: { fid: mockFid }
@@ -78,15 +110,21 @@ const FarcasterQuizApp = () => {
       const token = authResponse.data.access_token;
       setAuthToken(token);
       
-      // Get user profile
-      const profileResponse = await apiCall('/user/profile', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      // Create demo user
+      const demoUser = {
+        fid: mockFid,
+        username: `demo_user_${mockFid}`,
+        display_name: `Demo User ${mockFid}`,
+        bio: 'Demo user for testing',
+        pfp_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=user${mockFid}`
+      };
       
-      setUser(profileResponse.data);
+      setUser(demoUser);
+      await loadLeaderboard();
     } catch (error) {
-      console.error('Authentication failed:', error);
-      throw new Error('Failed to authenticate');
+      console.error('Failed to initialize demo app:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
