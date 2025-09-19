@@ -415,6 +415,17 @@ const FarcasterQuizApp = () => {
         </div>
       </div>
 
+      {!isAuthenticated && (
+        <Card className="auth-card">
+          <div className="auth-content">
+            <h3>Connect with Farcaster</h3>
+            <p>Sign in with your Farcaster account to save your progress and compete on the leaderboard!</p>
+            <SignInButton />
+            <p className="demo-note">Or continue as a demo user below</p>
+          </div>
+        </Card>
+      )}
+
       {user && (
         <Card className="user-card">
           <div className="user-profile">
