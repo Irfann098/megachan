@@ -426,6 +426,12 @@ def main():
     tester.test_leaderboard()
     tester.test_leaderboard_with_category()
 
+    # Test NEW Weekly Leaderboard Status functionality
+    print("\n🗓️ Testing Weekly Leaderboard Reset System...")
+    if not tester.test_weekly_leaderboard_status():
+        print("❌ Weekly leaderboard status test failed")
+        return 1
+
     # Test error cases
     tester.test_invalid_session()
     tester.test_unauthorized_access()
