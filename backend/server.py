@@ -180,6 +180,7 @@ GENERAL_QUESTIONS = [
 quiz_sessions = {}
 leaderboard_data = []
 daily_quests = {}  # Key: f"{user_fid}_{date}" -> DailyQuest
+leaderboard_last_reset = datetime.now(timezone.utc)  # Track when leaderboard was last reset
 
 # Daily quest utility functions
 def get_utc_date_string() -> str:
@@ -191,6 +192,49 @@ def get_next_reset_time() -> datetime:
     now = datetime.now(timezone.utc)
     tomorrow = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
     return tomorrow
+
+def get_next_monday_reset() -> datetime:
+    """Get the next Monday 0:00 UTC for weekly leaderboard reset"""
+    now = datetime.now(timezone.utc)
+    days_until_monday = (7 - now.weekday()) % 7
+    if days_until_monday == 0 and now.hour == 0 and now.minute == 0:
+        # If it's already Monday 0:00, next reset is in 7 days
+        days_until_monday = 7
+    
+    next_monday = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=days_until_monday)
+    return next_monday
+
+def check_and_reset_weekly_leaderboard():
+    """Check if it's time to reset the weekly leaderboard and reset if needed"""
+    global leaderboard_data, leaderboard_last_reset
+    
+    now = datetime.now(timezone.utc)
+    # Check if it's a new week (Monday 0:00 UTC)
+    if now.weekday() == 0:  # Monday is 0
+        # Check if we haven't reset this week yet
+        last_reset_week = leaderboard_last_reset.isocalendar()[1]  # Week number
+        current_week = now.isocalendar()[1]
+        
+        if current_week != last_reset_week:
+            # Reset the leaderboard
+            leaderboard_data.clear()
+            leaderboard_last_reset = now
+            logging.info(f"Weekly leaderboard reset completed at {now}")
+            return True
+    
+    return False
+
+def get_weekly_leaderboard_status() -> WeeklyLeaderboardStatus:
+    """Get weekly leaderboard reset status"""
+    next_reset = get_next_monday_reset()
+    now = datetime.now(timezone.utc)
+    days_until_reset = (next_reset - now).days
+    
+    return WeeklyLeaderboardStatus(
+        next_reset=next_reset,
+        days_until_reset=days_until_reset,
+        last_reset=leaderboard_last_reset
+    )
 
 def get_daily_quest(user_fid: int) -> DailyQuest:
     """Get or create daily quest for user"""
