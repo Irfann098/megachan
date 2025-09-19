@@ -152,6 +152,7 @@ const FarcasterQuizApp = () => {
       // Load quest status and leaderboard
       await loadQuestStatus(token);
       await loadLeaderboard();
+      await loadWeeklyLeaderboardStatus();
     } catch (error) {
       console.error('Failed to initialize authenticated app:', error);
       initializeDemoApp();
