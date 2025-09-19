@@ -211,6 +211,25 @@ const FarcasterQuizApp = () => {
     }
   };
 
+  const loadWeeklyLeaderboardStatus = async () => {
+    try {
+      const response = await axios.get(`${API}/leaderboard/weekly-status`);
+      setWeeklyLeaderboardStatus(response.data);
+    } catch (error) {
+      console.error('Failed to load weekly leaderboard status:', error);
+      // Set default weekly status
+      const nextMonday = new Date();
+      nextMonday.setDate(nextMonday.getDate() + (1 + 7 - nextMonday.getDay()) % 7);
+      nextMonday.setUTCHours(0, 0, 0, 0);
+      
+      setWeeklyLeaderboardStatus({
+        next_reset: nextMonday.toISOString(),
+        days_until_reset: Math.ceil((nextMonday - new Date()) / (1000 * 60 * 60 * 24)),
+        last_reset: new Date().toISOString()
+      });
+    }
+  };
+
   const apiCall = async (endpoint, options = {}) => {
     const config = {
       headers: {
