@@ -6,7 +6,7 @@ from datetime import datetime
 class FarcasterQuizAPITester:
     def __init__(self, base_url="https://quizchain.preview.emergentagent.com"):
         self.base_url = base_url
-        self.api_url = f"{base_url}/api"
+        self.api_url = f"{base_url}/frames"
         self.token = None
         self.tests_run = 0
         self.tests_passed = 0
