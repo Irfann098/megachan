@@ -206,6 +206,12 @@ const FarcasterQuizApp = () => {
 
   const startQuiz = async (category = 'crypto') => {
     try {
+      // Check if user can play
+      if (!questStatus || !questStatus.can_play) {
+        alert(`Daily limit reached! You can play again in ${resetCountdown}`);
+        return;
+      }
+
       setSelectedCategory(category);
       const response = await apiPost('/quiz/start', null, {
         params: { category }
@@ -217,8 +223,14 @@ const FarcasterQuizApp = () => {
       setShowAnswer(false);
       setTimeLeft(10);
       setTimerActive(true);
+      
+      // Update quest status after starting
+      await loadQuestStatus();
     } catch (error) {
       console.error('Failed to start quiz:', error);
+      if (error.response?.status === 429) {
+        alert('Daily limit reached! Come back tomorrow for more questions.');
+      }
     }
   };
 
