@@ -40,6 +40,8 @@ const FarcasterQuizApp = () => {
   const [timerActive, setTimerActive] = useState(false);
   const [questStatus, setQuestStatus] = useState(null);
   const [resetCountdown, setResetCountdown] = useState('');
+  const [weeklyLeaderboardStatus, setWeeklyLeaderboardStatus] = useState(null);
+  const [weeklyResetCountdown, setWeeklyResetCountdown] = useState('');
 
   useEffect(() => {
     if (isAuthenticated && profile) {
