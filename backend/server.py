@@ -375,6 +375,13 @@ async def get_daily_quest_status_endpoint(current_user: FarcasterUser = Depends(
     """Get user's daily quest status"""
     return get_daily_quest_status(current_user.fid)
 
+@api_router.get("/leaderboard/weekly-status", response_model=WeeklyLeaderboardStatus)
+async def get_weekly_leaderboard_status():
+    """Get weekly leaderboard reset status"""
+    # Check for weekly reset before returning status
+    check_and_reset_weekly_leaderboard()
+    return get_weekly_leaderboard_status()
+
 @api_router.post("/quiz/start")
 async def start_quiz(
     category: str = "crypto",
