@@ -575,7 +575,7 @@ body::before {
 
 .completion-stats {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 32px;
   margin-bottom: 40px;
 }
