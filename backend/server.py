@@ -83,6 +83,11 @@ class DailyQuestStatus(BaseModel):
     total_score_today: int
     can_play: bool
 
+class WeeklyLeaderboardStatus(BaseModel):
+    next_reset: datetime
+    days_until_reset: int
+    last_reset: datetime
+
 class LeaderboardEntry(BaseModel):
     fid: int
     username: str
