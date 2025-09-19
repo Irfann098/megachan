@@ -254,6 +254,16 @@ body::before {
   border-color: rgba(64, 224, 208, 0.3);
 }
 
+.mode-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mode-card.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .crypto-mode:hover {
   background: linear-gradient(135deg, rgba(64, 224, 208, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
