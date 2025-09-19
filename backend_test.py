@@ -89,21 +89,105 @@ class FarcasterQuizAPITester:
             return True
         return False
 
-    def test_user_profile(self):
-        """Test getting user profile"""
+    def test_daily_quest_status(self):
+        """Test getting daily quest status"""
         if not self.token:
-            print("❌ No token available for user profile test")
+            print("❌ No token available for daily quest status test")
             return False
             
         success, response = self.run_test(
-            "User Profile",
+            "Daily Quest Status",
             "GET",
-            "/user/profile",
+            "/user/daily-quest",
             200
         )
         if success:
-            print(f"   User: {response.get('display_name')} (@{response.get('username')})")
+            self.quest_status = response
+            print(f"   Attempts remaining: {response.get('attempts_remaining')}")
+            print(f"   Max attempts: {response.get('max_attempts')}")
+            print(f"   Total score today: {response.get('total_score_today')}")
+            print(f"   Can play: {response.get('can_play')}")
+            print(f"   Reset time: {response.get('reset_time')}")
         return success
+
+    def test_daily_limit_enforcement(self):
+        """Test that daily limit is enforced after 3 attempts"""
+        if not self.token:
+            print("❌ No token available for daily limit test")
+            return False
+        
+        print(f"\n🔍 Testing Daily Limit Enforcement...")
+        attempts_made = 0
+        max_attempts = 3
+        
+        # Make multiple quiz attempts to test daily limit
+        for attempt in range(max_attempts + 1):  # Try one more than allowed
+            print(f"\n   Attempt {attempt + 1}:")
+            
+            # Check quest status before attempt
+            success, quest_response = self.run_test(
+                f"Quest Status Before Attempt {attempt + 1}",
+                "GET",
+                "/user/daily-quest",
+                200
+            )
+            
+            if success:
+                can_play = quest_response.get('can_play', False)
+                attempts_remaining = quest_response.get('attempts_remaining', 0)
+                print(f"     Can play: {can_play}, Attempts remaining: {attempts_remaining}")
+                
+                if can_play and attempts_remaining > 0:
+                    # Try to start a quiz
+                    success, quiz_response = self.run_test(
+                        f"Start Quiz Attempt {attempt + 1}",
+                        "POST",
+                        "/quiz/start",
+                        200,
+                        params={"category": "crypto"}
+                    )
+                    
+                    if success:
+                        attempts_made += 1
+                        session_id = quiz_response.get('session_id')
+                        questions = quiz_response.get('questions', [])
+                        
+                        # Answer the first question to complete the attempt
+                        if questions:
+                            answer_success, answer_response = self.run_test(
+                                f"Submit Answer Attempt {attempt + 1}",
+                                "POST",
+                                "/quiz/answer",
+                                200,
+                                data={
+                                    "session_id": session_id,
+                                    "question_id": questions[0]['id'],
+                                    "selected_answer": 0
+                                }
+                            )
+                            
+                            if answer_success:
+                                print(f"     Answer submitted, daily score: {answer_response.get('daily_total_score')}")
+                else:
+                    # Should get 429 error when trying to start quiz after limit
+                    success, error_response = self.run_test(
+                        f"Expected 429 on Attempt {attempt + 1}",
+                        "POST",
+                        "/quiz/start",
+                        429,
+                        params={"category": "crypto"}
+                    )
+                    
+                    if success:
+                        print(f"     ✅ Correctly blocked with 429 error")
+                        self.tests_passed += 1
+                        return True
+                    else:
+                        print(f"     ❌ Expected 429 error but got different response")
+                        return False
+        
+        print(f"   Total attempts made: {attempts_made}")
+        return attempts_made == max_attempts
 
     def test_start_crypto_quiz(self):
         """Test starting a crypto quiz"""
