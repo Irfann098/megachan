@@ -92,6 +92,9 @@ const FarcasterQuizApp = () => {
       updateCountdown();
       const interval = setInterval(updateCountdown, 1000);
       return () => clearInterval(interval);
+    }
+  }, [questStatus]);
+
   // Timer effect for weekly leaderboard reset countdown
   useEffect(() => {
     if (weeklyLeaderboardStatus && weeklyLeaderboardStatus.next_reset) {
