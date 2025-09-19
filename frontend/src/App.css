@@ -142,6 +142,7 @@ body::before {
   display: flex;
   align-items: center;
   gap: 20px;
+  position: relative;
 }
 
 .user-avatar {
@@ -162,6 +163,48 @@ body::before {
 .user-username {
   color: #40e0d0;
   font-size: 1rem;
+}
+
+.sign-out-button {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.sign-out-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Auth Card */
+.auth-card {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.auth-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.auth-content p {
+  color: #a0aec0;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.demo-note {
+  font-size: 0.9rem;
+  color: #718096;
+  margin-top: 16px !important;
+  margin-bottom: 0 !important;
 }
 
 /* Game Modes */
