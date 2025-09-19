@@ -9,7 +9,7 @@ import { AuthKitProvider, SignInButton, useProfile } from '@farcaster/auth-kit';
 import '@farcaster/auth-kit/styles.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = `${BACKEND_URL}/frames`;
 
 // Farcaster Auth Config
 const farcasterConfig = {
