@@ -38,6 +38,8 @@ const FarcasterQuizApp = () => {
   const [lastResult, setLastResult] = useState(null);
   const [timeLeft, setTimeLeft] = useState(10);
   const [timerActive, setTimerActive] = useState(false);
+  const [questStatus, setQuestStatus] = useState(null);
+  const [resetCountdown, setResetCountdown] = useState('');
 
   useEffect(() => {
     if (isAuthenticated && profile) {
