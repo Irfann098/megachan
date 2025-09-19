@@ -89,6 +89,22 @@ class FarcasterQuizAPITester:
             return True
         return False
 
+    def test_user_profile(self):
+        """Test getting user profile"""
+        if not self.token:
+            print("❌ No token available for user profile test")
+            return False
+            
+        success, response = self.run_test(
+            "User Profile",
+            "GET",
+            "/user/profile",
+            200
+        )
+        if success:
+            print(f"   User: {response.get('display_name')} (@{response.get('username')})")
+        return success
+
     def test_daily_quest_status(self):
         """Test getting daily quest status"""
         if not self.token:
