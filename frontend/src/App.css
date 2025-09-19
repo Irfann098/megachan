@@ -686,6 +686,37 @@ body::before {
 .leaderboard-card h1 {
   font-size: 2rem;
   font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.weekly-reset-info {
+  margin-top: 12px;
+}
+
+.reset-info-text {
+  color: #a0aec0;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.empty-leaderboard {
+  text-align: center;
+  padding: 60px 20px;
+  color: #a0aec0;
+}
+
+.empty-leaderboard p {
+  margin: 8px 0;
+  font-size: 1.1rem;
+}
+
+.empty-leaderboard p:first-child {
+  font-size: 1.3rem;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .leaderboard-list {
